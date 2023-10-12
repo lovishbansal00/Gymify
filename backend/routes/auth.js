@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const { getToken } = require("../utils/helper");
+const bcrypt = require('bcrypt');
 
 router.post("/register", async (req, res) => {
     // req.body format :- email, password, firstName, lastName, username
@@ -34,5 +35,34 @@ router.post("/register", async (req, res) => {
     const returnUser = { ...newUser.toJSON(), token };
     returnUser.password = undefined;
     return res.status(200).json(returnUser);
-
 });
+
+
+router.post("/login", async (req, res) => {
+    // get email and password from req.body
+    const { email, password } = req.body;
+
+    // check if user exists or not
+    const user = await User.find({ email: email });
+    if (!user) {
+        return res
+            .statusCode(403)
+            .json({ err: "User does not exists" });
+    }
+
+    // check if password is correct or not
+    const isPasswordCorrect = bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+        return res
+            .statusCode(403)
+            .json({ err: "Password is incorrect" });
+    }
+
+    // create token for JSON Web Toker
+    const token = await getToken(email, user);
+    const returnUser = { ...user.toJSON(), token };
+    returnUser.password = undefined;
+    return res.status(200).json(returnUser);
+});
+
+module.exports = router;

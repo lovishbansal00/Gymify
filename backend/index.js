@@ -1,30 +1,36 @@
 const express = require("express");
-const app = express();
 const mongoose = require("mongoose");
-const User = require("./models/User");
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const passport = require("passport");
 require("dotenv").config();
 
+// models
+const User = require("./models/User");
+
+// routes
+const authRoutes = require("./routes/auth");
+const songRoutes = require("./routes/song");
+
+const app = express();
+app.use(express.json());
 mongoose.connect("mongodb://localhost:27017/spotifyDB", { useNewUrlParser: true, useUnifiedTopology: true });
 
 let opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = 'thisKeyIsSecretKey';
 passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
-    User.findOne({ id: jwt_payload.sub }, function (err, user) {
-        // (done, doesTheUserExits)
-        if (err) {
-            return done(err, false);
-        }
-        if (user) {
-            return done(null, user);
-        } else {
-            return done(null, false);
-            // or you could create a new account
-        }
-    });
+    User.findOne({ id: jwt_payload.sub })
+        .then((err, user) => {
+            // (done, doesTheUserExits)
+            if (err)
+                return done(err, false);
+
+            if (user)
+                return done(null, user);
+            else
+                return done(null, false);
+        });
 }));
 
 
@@ -32,6 +38,10 @@ passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
 app.get("/", (req, res) => {
     res.send("Hello World");
 });
+
+app.use("/auth", authRoutes);
+
+app.use("/song", songRoutes);
 
 app.listen(3000, () => {
     console.log("Server running on port 3000");
