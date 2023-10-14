@@ -11,6 +11,7 @@ const User = require("./models/User");
 // routes
 const authRoutes = require("./routes/auth");
 const songRoutes = require("./routes/song");
+const playlistRoutes = require("./routes/playlist");
 
 const app = express();
 app.use(express.json());
@@ -20,17 +21,16 @@ let opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = 'thisKeyIsSecretKey';
 passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
-    User.findOne({ id: jwt_payload.sub })
-        .then((err, user) => {
-            // (done, doesTheUserExits)
-            if (err)
-                return done(err, false);
+    User.findOne({ id: jwt_payload.sub }, (err, user) => {
+        // (done, doesTheUserExits)
+        if (err)
+            return done(err, false);
 
-            if (user)
-                return done(null, user);
-            else
-                return done(null, false);
-        });
+        if (user)
+            return done(null, user);
+        else
+            return done(null, false);
+    });
 }));
 
 
@@ -42,6 +42,8 @@ app.get("/", (req, res) => {
 app.use("/auth", authRoutes);
 
 app.use("/song", songRoutes);
+
+app.use("playlist", playlistRoutes);
 
 app.listen(3000, () => {
     console.log("Server running on port 3000");
