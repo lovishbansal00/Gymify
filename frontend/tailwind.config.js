@@ -5,7 +5,11 @@ module.exports = {
 		extend: {},
 	},
 	variants: {
-		extend: {},
-	},
-	plugins: [],
+		extend: {
+			// fontFamily: {
+			// 	'poppins': ['Poppins', 'sans-serif']
+			// },
+		},
+		plugins: [],
+	}
 }
