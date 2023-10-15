@@ -24,7 +24,7 @@ function App() {
 const HelloComponent = () => {
 	return (
 		<div>
-			hiafhi
+			hi
 		</div>
 	)
 }
