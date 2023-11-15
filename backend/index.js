@@ -4,6 +4,7 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const passport = require("passport");
 require("dotenv").config();
+const cors = require("cors");
 
 // models
 const User = require("./models/User");
@@ -14,6 +15,7 @@ const songRoutes = require("./routes/song");
 const playlistRoutes = require("./routes/playlist");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 mongoose.connect("mongodb://localhost:27017/spotifyDB", { useNewUrlParser: true, useUnifiedTopology: true });
 
