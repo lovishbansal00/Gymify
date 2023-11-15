@@ -29,13 +29,23 @@ const SignupComponent = () => {
                     className="mb-6"
                 />
 
-                <PasswordInput label="Create Password" placeholder="Enter a strong password here" />
-
-                <TextInput
-                    label="What should we call you?"
-                    placeholder="Enter a profile name"
-                    className="my-6"
+                <PasswordInput
+                    label="Create Password"
+                    placeholder="Enter a strong password here"
                 />
+
+                <div className="w-full flex justify-between items-center space-x-8">
+                    <TextInput
+                        label="First Name"
+                        placeholder="Enter your First Name"
+                        className="my-6"
+                    />
+                    <TextInput
+                        label="Last Name"
+                        placeholder="Enter your Last Name"
+                        className="my-6"
+                    />
+                </div>
 
                 {/* login button */}
                 <div className="w-full flex items-center justify-center my-8">
